@@ -4,14 +4,14 @@ jobs:
   Vulnerability_scanning:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@main
+      - uses: actions/checkout@master
 
       - name: Check if gradle project
         run: echo "IS_GRADLE_PROJECT=$([[ -f ./build.gradle || -f ./build.gradle.kts ]] && echo 'true' || echo 'false')" >> $GITHUB_ENV
 
       - name: Run Snyk for gradle to check for vulnerabilities
         if: env.IS_GRADLE_PROJECT == 'true'
-        uses: snyk/actions/gradle@main
+        uses: snyk/actions/gradle@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
@@ -23,7 +23,7 @@ jobs:
 
       - name: Run Snyk for node to check for vulnerabilities
         if: env.IS_NODE_PROJECT == 'true'
-        uses: snyk/actions/node@main
+        uses: snyk/actions/node@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
