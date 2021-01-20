@@ -76,18 +76,14 @@ tasks {
     register("runServer", JavaExec::class) {
         println("Setting default environment variables for running with DittNAV docker-compose")
 
-        environment("SAF_API_URL", "https://saf.dummy.url")
         environment("CORS_ALLOWED_ORIGINS", "localhost:9002")
 
-        environment("OIDC_ISSUER", "http://localhost:9000")
-        environment("OIDC_DISCOVERY_URL", "http://localhost:9000/.well-known/openid-configuration")
-        environment("OIDC_ACCEPTED_AUDIENCE", "stubOidcClient")
         environment("LOGINSERVICE_IDPORTEN_DISCOVERY_URL", "http://localhost:9000/.well-known/openid-configuration")
         environment("LOGINSERVICE_IDPORTEN_AUDIENCE", "stubOidcClient")
         environment("OIDC_CLAIM_CONTAINING_THE_IDENTITY", "pid")
         
         environment("NAIS_CLUSTER_NAME", "dev-sbs")
-        environment("NAIS_NAMESPACE", "q1")
+        environment("NAIS_NAMESPACE", "personbruker")
         environment("SENSU_HOST", "stub")
         environment("SENSU_PORT", "")
 
