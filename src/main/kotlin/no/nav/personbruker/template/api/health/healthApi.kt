@@ -9,9 +9,8 @@ import io.ktor.routing.Routing
 import io.ktor.routing.get
 import io.prometheus.client.CollectorRegistry
 import io.prometheus.client.exporter.common.TextFormat
-import no.nav.personbruker.template.api.config.Environment
 
-fun Routing.healthApi(environment: Environment, collectorRegistry: CollectorRegistry = CollectorRegistry.defaultRegistry) {
+fun Routing.healthApi(healthService: HealthService, collectorRegistry: CollectorRegistry = CollectorRegistry.defaultRegistry) {
 
     val pingJsonResponse = """{"ping": "pong"}"""
 
@@ -24,11 +23,15 @@ fun Routing.healthApi(environment: Environment, collectorRegistry: CollectorRegi
     }
 
     get("/internal/isReady") {
-        call.respondText(text = "READY", contentType = ContentType.Text.Plain)
+        if (isReady(healthService)) {
+            call.respondText(text = "READY", contentType = ContentType.Text.Plain)
+        } else {
+            call.respondText(text = "NOTREADY", contentType = ContentType.Text.Plain, status = HttpStatusCode.ServiceUnavailable)
+        }
     }
 
     get("/internal/selftest") {
-        call.pingDependencies(environment)
+        call.buildSelftestPage(healthService)
     }
 
     get("/metrics") {
@@ -37,5 +40,11 @@ fun Routing.healthApi(environment: Environment, collectorRegistry: CollectorRegi
             TextFormat.write004(this, collectorRegistry.filteredMetricFamilySamples(names))
         }
     }
+}
 
+private suspend fun isReady(healthService: HealthService): Boolean {
+    val healthChecks = healthService.getHealthChecks()
+    return healthChecks
+            .filter { healthStatus -> healthStatus.includeInReadiness }
+            .all { healthStatus -> Status.OK == healthStatus.status }
 }

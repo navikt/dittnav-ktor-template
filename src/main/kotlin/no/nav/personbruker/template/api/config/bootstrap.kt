@@ -43,7 +43,7 @@ fun Application.mainModule(appContext: ApplicationContext = ApplicationContext()
     }
 
     routing {
-        healthApi(environment)
+        healthApi(appContext.healthService)
 
         get("/usikret") {
             call.respondText(text = "Usikret API.", contentType = ContentType.Text.Plain)
