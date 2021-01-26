@@ -8,17 +8,13 @@ import kotlinx.html.*
 import no.nav.personbruker.template.api.config.Environment
 import no.nav.personbruker.template.api.config.HttpClientBuilder
 
-suspend fun ApplicationCall.pingDependencies(environment: Environment) = coroutineScope {
-    val client = HttpClientBuilder.build()
+suspend fun ApplicationCall.buildSelftestPage(healthService: HealthService) = coroutineScope {
 
-    var services = emptyMap<String, SelftestStatus>()
-
-    client.close()
-
-    val serviceStatus = if (services.values.any { it.status == Status.ERROR }) Status.ERROR else Status.OK
+    val healthChecks = healthService.getHealthChecks()
+    val hasFailedChecks = healthChecks.any { healthStatus -> Status.ERROR == healthStatus.status }
 
     respondHtml(status =
-    if(Status.ERROR == serviceStatus) {
+    if(hasFailedChecks) {
         HttpStatusCode.ServiceUnavailable
     } else {
         HttpStatusCode.OK
@@ -28,24 +24,36 @@ suspend fun ApplicationCall.pingDependencies(environment: Environment) = corouti
             title { +"Selftest dittnav-ktor-template" }
         }
         body {
+            var text = if(hasFailedChecks) {
+                "FEIL"
+            } else {
+                "Service-status: OK"
+            }
             h1 {
-                style = if (serviceStatus == Status.OK) "background: green" else "background: red;font-weight:bold"
-                +"Service status: $serviceStatus"
+                style = if(hasFailedChecks) {
+                    "background: red;font-weight:bold"
+                } else {
+                    "background: green"
+                }
+                +text
             }
             table {
                 thead {
                     tr { th { +"SELFTEST dittnav-ktor-template" } }
                 }
                 tbody {
-                    services.map {
+                    healthChecks.map {
                         tr {
-                            td { +it.key }
-                            td { +it.value.pingedURL.toString() }
+                            td { +it.serviceName }
                             td {
-                                style = if (it.value.status == Status.OK) "background: green" else "background: red;font-weight:bold"
-                                +it.value.status.toString()
+                                style = if(it.status == Status.OK) {
+                                    "background: green"
+                                } else {
+                                    "background: red;font-weight:bold"
+                                }
+                                +it.status.toString()
                             }
-                            td { +it.value.statusMessage }
+                            td { +it.statusMessage }
                         }
                     }
                 }
