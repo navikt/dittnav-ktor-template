@@ -10,9 +10,10 @@ Kan brukes som utgangspunkt for å opprette nye Ktor-apper for Team DittNAV.
 
 # Kom i gang
 1. Bygg dittnav-ktor-template ved å kjøre `gradle build`
-2. Start appen lokalt ved å kjøre `./gradlew runServer`
-3. Appen nås på `http://localhost:8101/person/dittnav-ktor-template`
-4. F.eks. via `curl http://localhost:8101/person/dittnav-ktor-template/internal/isAlive`
+1. Start appens avhengigheter ved å kjøre `docker-compose up -d`
+1. Start appen lokalt ved å kjøre `gradle runServer`
+1. Appen nås på `http://localhost:8101/person/dittnav-ktor-template`
+   * F.eks. via `curl http://localhost:8101/person/dittnav-ktor-template/internal/isAlive`
 
 # Henvendelser
 
