@@ -54,9 +54,9 @@ fun Application.mainModule(appContext: ApplicationContext = ApplicationContext()
                 call.respondText(text = "Du er authentisert som $authenticatedUser.", contentType = ContentType.Text.Plain)
             }
         }
-
-        configureShutdownHook(appContext.httpClient)
     }
+
+    configureShutdownHook(appContext.httpClient)
 }
 
 private fun Application.configureShutdownHook(httpClient: HttpClient) {
