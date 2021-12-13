@@ -1,3 +1,7 @@
+# DEPRECATED
+
+Erstattet av
+
 # dittnav-ktor-template
 
 Kan brukes som utgangspunkt for å opprette nye Ktor-apper for Team DittNAV.
