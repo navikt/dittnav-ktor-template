@@ -1,6 +1,6 @@
 # DEPRECATED
 
-Erstattet av
+Erstattet av https://github.com/navikt/tms-ktor-template
 
 # dittnav-ktor-template
 
